@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
   "dev": "vite",
-  "dev:api": "cd .. && uvicorn backend.main:app --reload --port 8000",
+  "dev:api": "cd .. && source .venv/bin/activate && uvicorn backend.main:app --reload --port 8000",
   "dev:all": "concurrently -k -n \"FRONTEND,BACKEND\" -c \"cyan,magenta\" \"npm run dev\" \"npm run dev:api\"",
   "build": "vite build",
   "lint": "eslint .",
