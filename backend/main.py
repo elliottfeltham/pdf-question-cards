@@ -1,12 +1,13 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import json
 import httpx
-from dotenv import load_dotenv
-load_dotenv() 
-
+from dotenv import load_dotenv 
 from .pdf import extract_all_text
+from .prompts import WHOLE_PROMPT
 
+load_dotenv()
 app = FastAPI()
 
 app.add_middleware(
@@ -21,16 +22,12 @@ app.add_middleware(
 def health():
     return {"status": "ok"}
 
-@app.post("/api/upload")
-async def upload(file: UploadFile = File(...)):
+@app.post("/api/generate_questions")
+async def generate_questions(file: UploadFile = File(...)):
+    # Extract text from PDF
     text = extract_all_text(file.file)
-    return {
-        "filename": file.filename,
-        "text": text,
-    }
 
-@app.get("/api/test-llm")
-async def test_llm():
+    # Prepare LLM request
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         return {"error": "Missing OPENROUTER_API_KEY"}
@@ -39,6 +36,8 @@ async def test_llm():
     if not llm_model:
         return {"error": "Missing OPENROUTER_MODEL"}
     
+    prompt = WHOLE_PROMPT.format(lecture_text=text, max_items=10)
+    
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -46,8 +45,20 @@ async def test_llm():
     payload = {
         "model": llm_model,
         "messages": [
-            {"role": "user", "content": "Say hello, this is a test from my FastAPI app."}
-        ]
+        {
+          "role": "system",
+          "content": (
+            'Return strictly valid JSON only: {"items":[...]}. '
+            "Use ONLY information from TEXT. Avoid generic CS questions. "
+            "Prefer high-value, lecture-specific concepts. "
+            "Each item: type ('theory'|'coding'), prompt_md (≤25 words), solution_md (≤80 words), "
+            "starter_code/solution_code optional (Python)."
+            )},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.2,  
+        "top_p": 0.9,
+        "max_tokens": 1200,
     }
 
     async with httpx.AsyncClient(timeout=60) as client:
@@ -61,5 +72,29 @@ async def test_llm():
                 "details": e.response.text  
             }
         data = response.json()
+    
+    
+    content = data["choices"][0]["message"]["content"]
 
-    return {"raw": data}
+    # Clean up code block if present
+    clean_content = content.strip()
+    if clean_content.startswith("```"):
+        clean_content = clean_content.removeprefix("```json").removeprefix("```").strip()
+        if clean_content.endswith("```"):
+            clean_content = clean_content[:-3].strip()
+
+    # Parse JSON
+    try:
+        json_data = json.loads(clean_content)
+    except json.JSONDecodeError as e:
+        return {
+            "error": "Failed to parse JSON from LLM response",
+            "details": str(e),
+            "raw_content": clean_content
+        }
+
+    return {"raw": json_data}
+    
+
+
+    
