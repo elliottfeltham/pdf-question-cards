@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from .pdf import extract_all_text
 
 app = FastAPI()
 
@@ -17,10 +18,8 @@ def health():
 
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)):
-    # Just echo back for now
-    content = await file.read()
+    text = extract_all_text(file.file)
     return {
         "filename": file.filename,
-        "size": len(content),
-        "message": "Backend is receiving files correctly!"
+        "text": text,
     }

@@ -1,0 +1,71 @@
+/* Theme */
+
+:root {
+	--background: #fff8e7;
+	--pastel-blue: #a7c7e7;
+	--pastel-green: #b7e7a7;
+	--pastel-pink: #f7c7de;
+	--pastel-yellow: #fff7ae;
+	--pastel-purple: #d7c7f7;
+	--pastel-orange: #ffe0b2;
+}
+
+/* Reset CSS */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	line-height: 1.5;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+p {
+	text-wrap: wrap;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
