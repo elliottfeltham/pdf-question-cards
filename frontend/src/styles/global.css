@@ -2,6 +2,9 @@
 
 :root {
 	--background: #fff8e7;
+	--primary: #333;
+	--secondary: #666;
+	--error: #ff4d4f;
 	--pastel-blue: #a7c7e7;
 	--pastel-green: #b7e7a7;
 	--pastel-pink: #f7c7de;

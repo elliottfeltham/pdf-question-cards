@@ -1,14 +1,48 @@
 .button {
-	background-color: var(--pastel-green);
-	border: black 2px solid;
+	border: var(--primary) 2px solid;
 	color: white;
-	padding: 0.5rem 1rem;
+	padding: 1rem 2rem;
 	text-align: center;
 	text-decoration: none;
-	display: inline-block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	font-size: 1rem;
 	margin: 0.25rem;
 	cursor: pointer;
 	border-radius: 0.25rem;
 	transition: background-color 0.3s ease;
+}
+
+.icon {
+	width: 1rem;
+	height: 1rem;
+	margin-right: 0.5rem;
+}
+.primary {
+	background-color: var(--primary);
+}
+
+.blue {
+	background-color: var(--pastel-blue);
+}
+
+.green {
+	background-color: var(--pastel-green);
+}
+
+.pink {
+	background-color: var(--pastel-pink);
+}
+
+.yellow {
+	background-color: var(--pastel-yellow);
+}
+
+.purple {
+	background-color: var(--pastel-purple);
+}
+
+.orange {
+	background-color: var(--pastel-orange);
 }

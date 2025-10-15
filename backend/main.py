@@ -26,6 +26,8 @@ def health():
 async def generate_questions(file: UploadFile = File(...)):
     # Extract text from PDF
     text = extract_all_text(file.file)
+    if len(text) > 30000:
+        return {"error": "PDF text exceeds 30,000 characters limit."}
 
     # Prepare LLM request
     api_key = os.getenv("OPENROUTER_API_KEY")
