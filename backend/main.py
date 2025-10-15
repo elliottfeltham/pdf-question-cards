@@ -1,5 +1,6 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Body
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 import os
 import json
 import httpx
@@ -7,6 +8,8 @@ import uuid
 from dotenv import load_dotenv 
 from .pdf import extract_all_text
 from .prompts import WHOLE_PROMPT
+from .notebook import items_to_notebook
+import nbformat as nbf
 
 load_dotenv()
 app = FastAPI()
@@ -55,8 +58,8 @@ async def generate_questions(file: UploadFile = File(...)):
             "Use ONLY information from TEXT. Avoid generic CS questions. "
             "Prefer high-value, lecture-specific concepts. "
             "Each item: type ('theory'|'coding'), prompt_md (≤25 words), solution_md (≤80 words), "
-            "starter_code/solution_code for coding questions (Python)."
-            "Ensure starter_code doesn't give away the solution."
+            "solution_code for coding questions (Python)."
+            "Don't include starter code."
             "Ensure JSON is well-formed and parsable."
             )},
             {"role": "user", "content": prompt}
@@ -104,3 +107,18 @@ async def generate_questions(file: UploadFile = File(...)):
 
     return {"questions": items}
     
+
+
+
+@app.post("/api/export/notebook")
+def export_notebook(payload: dict = Body(...)):
+    title = payload.get("title", "Lecture Notebook")
+    items = payload.get("items", [])
+    nb = items_to_notebook(title, items)
+    data = nbf.writes(nb)
+    safe_name = "".join(c for c in title if c.isalnum() or c in (" ","-","_")).rstrip()
+    return Response(
+        content=data,
+        media_type="application/x-ipynb+json",
+        headers={"Content-Disposition": f'attachment; filename="{(safe_name or "notebook").replace(" ","_")}.ipynb"'}
+    )

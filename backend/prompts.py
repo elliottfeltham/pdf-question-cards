@@ -4,9 +4,8 @@ Each item fields:
 - type: "theory" or "coding"
 - prompt_md: <= 25 words, one idea
 - solution_md: <= 80 words explaining the answer
-- starter_code / solution_code should be provided for coding questions (Python if used)
-- Don't include #Your code here comments
-- Ensure starter_code doesn't give away the solution
+- solution_code should be provided for coding questions (Python if used)
+- Don't include starter code
 Create up to {max_items} high-value, non-duplicate items.
 
 TEXT:

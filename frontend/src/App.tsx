@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import CardContainer from "./components/CardContainer";
 import FileUpload from "./components/FileUpload";
 import Spinner from "./components/Spinner";
+import { exportNotebook } from "./lib/api";
 
 function App() {
 	const [error, setError] = React.useState<string | null>(null);
@@ -24,10 +25,21 @@ function App() {
 					<Spinner />
 				</div>
 			)}
-			{error ? (
-				<p className="error">{error}</p>
+			{!error && questions.length > 0 ? (
+				<>
+					<CardContainer questions={questions} />
+					<button
+						style={{ margin: "2rem" }}
+						onClick={() =>
+							exportNotebook("Lecture Notebook", questions)
+						}
+						disabled={!questions.length}
+					>
+						Export Notebook (.ipynb)
+					</button>
+				</>
 			) : (
-				<CardContainer questions={questions} />
+				<p className="error">{error}</p>
 			)}
 		</div>
 	);
