@@ -29,12 +29,7 @@ const QuestionCard = ({ question, color, questionNumber }: Props) => {
 				</h2>
 			</div>
 			<p>{question.prompt_md}</p>
-			{question.starter_code && (
-				<>
-					<h3>Starter code:</h3>
-					<p>{question.starter_code}</p>
-				</>
-			)}
+
 			<textarea
 				className={style.codeArea}
 				placeholder="Write your answer here..."
