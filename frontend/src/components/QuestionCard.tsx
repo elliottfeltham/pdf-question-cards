@@ -1,9 +1,11 @@
+import type { Question } from "../types";
+
 type Props = {
-	question: string;
+	question: Question;
 };
 
 const QuestionCard = ({ question }: Props) => {
-	return <div>{question}</div>;
+	return <div>{question.prompt_md}</div>;
 };
 
 export default QuestionCard;

@@ -1,8 +1,9 @@
+import "./styles/App.css";
+import type { Question } from "./types";
 import React from "react";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import CardContainer from "./components/CardContainer";
-import "./styles/App.css";
 
 const fileInputRef = React.createRef<HTMLInputElement>();
 
@@ -11,7 +12,7 @@ const handleUploadButton = () => {
 };
 
 function App() {
-	const [questions, setQuestions] = React.useState("");
+	const [questions, setQuestions] = React.useState<Question[]>([]);
 
 	const handleFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>
@@ -34,7 +35,7 @@ function App() {
 
 		console.log("Server response:", responseData);
 
-		setQuestions(responseData.raw.items[0].prompt_md);
+		setQuestions(responseData.raw.items);
 	};
 
 	return (

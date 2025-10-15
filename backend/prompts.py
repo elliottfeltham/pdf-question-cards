@@ -3,7 +3,7 @@ Return ONLY JSON object: {{"items":[ ... ]}}.
 Each item fields:
 - type: "theory" or "coding"
 - prompt_md: <= 25 words, one idea
-- solution_md: <= 80 words (optional)
+- solution_md: <= 80 words explaining the answer
 - starter_code / solution_code optional (Python if used)
 Create up to {max_items} high-value, non-duplicate items.
 
