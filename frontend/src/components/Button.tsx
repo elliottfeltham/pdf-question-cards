@@ -12,14 +12,14 @@ type ButtonProps = {
 		| "purple"
 		| "orange";
 
-	handleClick: () => void;
+	onClick: () => void;
 };
 
-const Button = ({ text, color, handleClick }: ButtonProps) => {
+const Button = ({ text, color, onClick }: ButtonProps) => {
 	return (
 		<button
 			className={`${styles.button} ${styles[color]}`}
-			onClick={handleClick}
+			onClick={onClick}
 		>
 			<Upload className={styles.icon} />
 			{text}

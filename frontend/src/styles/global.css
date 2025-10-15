@@ -72,3 +72,9 @@ h5,
 h6 {
 	text-wrap: balance;
 }
+
+.error {
+	color: var(--error);
+	text-align: center;
+	margin-top: 1rem;
+}
