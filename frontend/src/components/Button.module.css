@@ -1,6 +1,6 @@
 .button {
 	border: var(--primary) 2px solid;
-	color: white;
+	color: var(--primary);
 	padding: 1rem 2rem;
 	text-align: center;
 	text-decoration: none;

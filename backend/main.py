@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import json
 import httpx
+import uuid
 from dotenv import load_dotenv 
 from .pdf import extract_all_text
 from .prompts import WHOLE_PROMPT
@@ -54,7 +55,9 @@ async def generate_questions(file: UploadFile = File(...)):
             "Use ONLY information from TEXT. Avoid generic CS questions. "
             "Prefer high-value, lecture-specific concepts. "
             "Each item: type ('theory'|'coding'), prompt_md (≤25 words), solution_md (≤80 words), "
-            "starter_code/solution_code optional (Python)."
+            "starter_code/solution_code for coding questions (Python)."
+            "Ensure starter_code doesn't give away the solution."
+            "Ensure JSON is well-formed and parsable."
             )},
             {"role": "user", "content": prompt}
         ],
@@ -94,9 +97,10 @@ async def generate_questions(file: UploadFile = File(...)):
             "details": str(e),
             "raw_content": clean_content
         }
-
-    return {"raw": json_data}
     
+    items = json_data.get("items")
 
+    items = [{"id": str(uuid.uuid4()), **item} for item in items]
 
+    return {"questions": items}
     

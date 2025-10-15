@@ -1,0 +1,74 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	max-width: 32rem;
+	border: 1px solid var(--primary);
+	border-radius: 8px;
+	padding: 1rem;
+	margin: 0.5rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.coding {
+	font-family: "JetBrains Mono", monospace;
+	font-size: 1.25rem;
+}
+
+.theory {
+	font-family: "Georgia", serif;
+	font-style: italic;
+	font-size: 1.5rem;
+}
+
+.coding,
+.theory {
+	font-weight: 100;
+}
+
+textarea {
+	width: 100%;
+	min-height: 100px;
+	padding: 0.5rem;
+	border: 1px solid var(--secondary);
+	border-radius: 4px;
+	resize: vertical;
+	font-size: 1rem;
+	font-family: inherit;
+}
+
+.blue {
+	background-color: var(--pastel-blue);
+}
+
+.green {
+	background-color: var(--pastel-green);
+}
+
+.pink {
+	background-color: var(--pastel-pink);
+}
+
+.yellow {
+	background-color: var(--pastel-yellow);
+}
+
+.purple {
+	background-color: var(--pastel-purple);
+}
+
+.orange {
+	background-color: var(--pastel-orange);
+}
+
+h3 {
+	margin: 0;
+	color: var(--primary);
+	font-size: 1.25rem;
+}

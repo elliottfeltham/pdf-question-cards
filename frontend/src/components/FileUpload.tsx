@@ -7,9 +7,14 @@ import styles from "./FileUpload.module.css";
 type FileUploadProps = {
 	setQuestions: (questions: Question[]) => void;
 	setError: (error: string | null) => void;
+	setLoading: (loading: boolean) => void;
 };
 
-const FileUpload = ({ setQuestions, setError }: FileUploadProps) => {
+const FileUpload = ({
+	setQuestions,
+	setError,
+	setLoading,
+}: FileUploadProps) => {
 	const fileInputRef = React.createRef<HTMLInputElement>();
 
 	const handleUploadButton = () => {
@@ -19,6 +24,9 @@ const FileUpload = ({ setQuestions, setError }: FileUploadProps) => {
 	const handleFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
+		setError(null);
+		setLoading?.(true);
+
 		const file = event.target.files?.[0];
 		if (!file) {
 			console.log("No file selected");
@@ -37,6 +45,7 @@ const FileUpload = ({ setQuestions, setError }: FileUploadProps) => {
 
 		if (responseData.error) {
 			// Handle error: show message to user, log, etc.
+			setLoading(false);
 			setError(responseData.error);
 			console.error("Error from server:", responseData.error);
 			return;
@@ -44,7 +53,8 @@ const FileUpload = ({ setQuestions, setError }: FileUploadProps) => {
 
 		console.log("Server response:", responseData);
 
-		setQuestions(responseData.raw.items);
+		setLoading(false);
+		setQuestions(responseData.questions);
 	};
 
 	return (
@@ -61,8 +71,8 @@ const FileUpload = ({ setQuestions, setError }: FileUploadProps) => {
 			<p>Click the button to upload a PDF file</p>
 			<Button
 				text="Upload PDF"
-				color="primary"
-				handleClick={handleUploadButton}
+				color="green"
+				onClick={handleUploadButton}
 			/>
 		</section>
 	);
