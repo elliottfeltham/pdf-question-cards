@@ -1,12 +1,15 @@
 import QuestionCard from "./QuestionCard";
+import type { Question } from "../types";
 
 type CardContainerProps = {
-	questions: string;
+	questions: Question[];
 };
 const CardContainer = ({ questions }: CardContainerProps) => {
 	return (
 		<div className="card-container">
-			<QuestionCard question={questions} />
+			{questions.map((question, index) => {
+				return <QuestionCard key={index} question={question} />;
+			})}
 		</div>
 	);
 };
