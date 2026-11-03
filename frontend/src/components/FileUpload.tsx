@@ -10,12 +10,20 @@ type FileUploadProps = {
 	setLoading: (loading: boolean) => void;
 };
 
+type GenerateQuestionsResponse = {
+	questions?: Question[];
+	error?: string;
+	detail?: string;
+};
+
+const MAX_PDF_BYTES = 10 * 1024 * 1024;
+
 const FileUpload = ({
 	setQuestions,
 	setError,
 	setLoading,
 }: FileUploadProps) => {
-	const fileInputRef = React.createRef<HTMLInputElement>();
+	const fileInputRef = React.useRef<HTMLInputElement>(null);
 
 	const handleUploadButton = () => {
 		fileInputRef.current?.click();
@@ -25,42 +33,53 @@ const FileUpload = ({
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setError(null);
-		setLoading?.(true);
 
 		const file = event.target.files?.[0];
-		if (!file) {
-			console.log("No file selected");
+		if (!file) return;
+		if (file.type !== "application/pdf") {
+			setError("Please select a PDF file.");
+			event.target.value = "";
 			return;
 		}
-		console.log("Selected file:", file);
+		if (file.size > MAX_PDF_BYTES) {
+			setError("PDF exceeds the 10 MB upload limit.");
+			event.target.value = "";
+			return;
+		}
 
-		const data = new FormData();
-		data.append("file", file);
-		const response = await fetch("/api/generate_questions", {
-			method: "POST",
-			body: data,
-		});
+		setLoading(true);
+		try {
+			const data = new FormData();
+			data.append("file", file);
+			const response = await fetch("/api/generate_questions", {
+				method: "POST",
+				body: data,
+			});
+			const responseData = (await response.json()) as GenerateQuestionsResponse;
 
-		const responseData = await response.json();
-
-		if (responseData.error) {
-			// Handle error: show message to user, log, etc.
+			if (!response.ok || responseData.error || !responseData.questions) {
+				throw new Error(
+					responseData.detail ||
+						responseData.error ||
+						"Question generation failed. Please try again."
+				);
+			}
+			setQuestions(responseData.questions);
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "Question generation failed. Please try again."
+			);
+		} finally {
 			setLoading(false);
-			setError(responseData.error);
-			console.error("Error from server:", responseData.error);
-			return;
+			event.target.value = "";
 		}
-
-		console.log("Server response:", responseData);
-
-		setLoading(false);
-		setQuestions(responseData.questions);
 	};
 
 	return (
 		<section className={styles.file_upload}>
 			<FileText className={styles.file_icon} />
-			{/* Hidden file input */}
 			<input
 				type="file"
 				accept="application/pdf"
