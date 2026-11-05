@@ -14,7 +14,7 @@ function App() {
 
 	return (
 		<div className="container">
-			<Header title="Conversion Course" />
+			<Header title="PDF Question Cards" />
 			<FileUpload
 				setQuestions={setQuestions}
 				setError={setError}

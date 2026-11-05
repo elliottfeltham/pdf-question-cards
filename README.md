@@ -4,6 +4,23 @@ A full-stack study tool that turns computer-science lecture PDFs into interactiv
 theory and coding questions. Generated questions can be reviewed in the React
 interface or exported as a Jupyter notebook.
 
+## How It Works
+
+```mermaid
+flowchart LR
+    U[PDF upload] --> V[Validation and limits]
+    V --> X[PyMuPDF text extraction]
+    X --> O[OpenRouter generation]
+    O --> N[Schema validation]
+    N --> C[Interactive question cards]
+    C --> J[Jupyter notebook export]
+```
+
+The browser sends the selected PDF to a FastAPI endpoint. The backend validates
+the file type and size, extracts bounded text, asks the configured model for a
+strict JSON response, and normalises the response before returning it to the
+React interface. Provider-controlled IDs and unexpected fields are discarded.
+
 ## Features
 
 - PDF text extraction with file-size, page-count, and text-length limits
@@ -18,6 +35,19 @@ interface or exported as a Jupyter notebook.
 - **Frontend:** React, TypeScript, and Vite
 - **Backend:** FastAPI, PyMuPDF, HTTPX, and nbformat
 - **Question generation:** OpenRouter
+
+## Engineering Decisions
+
+- **Server-side provider access:** the OpenRouter credential stays in the
+  backend environment and is never exposed to the browser.
+- **Bounded processing:** upload size, page count, extracted text, generated
+  item count, and notebook export size are capped before expensive work.
+- **Validated model output:** generated data is treated as untrusted input and
+  converted into a small allow-listed response shape.
+- **Safe failure behaviour:** provider failures return generic messages without
+  leaking upstream responses or credentials.
+- **Portable study output:** generated questions remain usable outside the web
+  interface through standards-based Jupyter notebook export.
 
 ## Local Setup
 
@@ -62,6 +92,15 @@ cd frontend
 npm run lint
 npm run build
 ```
+
+GitHub Actions runs these checks for every push and pull request to `main`.
+
+## Current Scope
+
+This is a portfolio and local-development application rather than a hosted
+multi-user service. A public deployment should add persistent distributed rate
+limiting, authentication where appropriate, provider-side spending limits, and
+production monitoring.
 
 ## Security Notes
 
